@@ -81,16 +81,16 @@ export const validatePassword = async (
 
 /**
  * Revoke token
- * 
+ *
  * @param {string} email - The email of the user.
  * @returns {boolean} - True if the token was revoked, otherwise false.
  */
-export const revokeToken = (email:string): boolean => {
-    const foundUser = users.get(email);
-    if (!foundUser) {
-        return false;
-    }
+export const revokeUserToken = (email: string): boolean => {
+  const foundUser = users.get(email);
+  if (!foundUser) {
+    return false;
+  }
 
-    users.set(email, {  ...foundUser, refreshToken: undefined });
-    return true;
-}
+  users.set(email, { ...foundUser, refreshToken: undefined });
+  return true;
+};
