@@ -3,7 +3,10 @@ import {
   authenticateToken,
   type AuthenticatedRequest,
 } from "../middleware/authentication";
-import { getAllCharacters, getCharacterById } from "../models";
+import { addCharacter, CharacterSchema, getAllCharacters, getCharacterById, Role, type Character } from "../models";
+import { authorizeRoles } from "../middleware/authorization";
+import { parseBody } from "../utils/parseBody";
+import { safeParse } from "valibot";
 
 export const characterRouter = async (
   req: IncomingMessage,
@@ -37,5 +40,29 @@ export const characterRouter = async (
     res.statusCode = 200;
     res.end(JSON.stringify(character));
     return;
+  }
+
+  if (url === "/characters" && method === "POST") {
+    if(!(authorizeRoles(Role.ADMIN, Role.USER)(req as AuthenticatedRequest, res))) {
+      res.statusCode = 403;
+      res.end(JSON.stringify({ message: "Forbidden" }));
+      return;
+    }
+
+    const body = await parseBody(req)
+    const result = safeParse(CharacterSchema, body);
+    if (result.issues) {
+      res.statusCode = 400;
+      res.end(JSON.stringify({ message: result.issues }));
+      return;
+    }
+
+    const character: Character = body;
+    addCharacter(character);
+
+    res.statusCode = 201;
+    res.end(JSON.stringify(character));
+    return;
+
   }
 };
