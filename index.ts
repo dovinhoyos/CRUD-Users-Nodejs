@@ -1,19 +1,30 @@
+import cors from "cors";
+import { createServer } from "http";
+import { authRouter, characterRouter } from "./routes";
+import config from "./config";
 
-// const arregloValores = [
-//     {
-//         nombre: 'Juan',
-//         apellido: 'Perez'
-//     },
-//     {
-//         nombre: 'Maria',
-//     }
-// ]
+const corsMiddleware = cors();
 
-// const metodo = (param: typeof arregloValores) => {
-//     const indexArray = [1, 2]
+const server = createServer(async (req, res) => {
+  corsMiddleware(req, res, async () => {
+    res.setHeader("Content-Type", "application/json");
 
-//     indexArray.forEach(index => {
-//         console.log(index)
-//     }
-// )
-// }
+    try {
+      if (req.url?.startsWith("/auth")) {
+        await authRouter(req, res);
+      } else if (req.url?.startsWith("/characters")) {
+        await characterRouter(req, res);
+      } else {
+        res.statusCode = 404;
+        res.end(JSON.stringify({ message: "Endpoint Not Found" }));
+      }
+    } catch (_err) {
+      res.statusCode = 500;
+      res.end(JSON.stringify({ error: "Internal Server Error" }));
+    }
+  });
+});
+
+server.listen(config.port, () => {
+  console.log(`Server is running on http://localhost:${config.port}`);
+});
