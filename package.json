@@ -3,12 +3,17 @@
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "scripts": {
+    "lint": "eslint .",
+    "dev": "bun run index.ts"
+  },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
     "@types/bcrypt": "^5.0.2",
     "@types/bun": "latest",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.13.10",
+    "@types/cors": "^2.8.17",
     "@typescript-eslint/eslint-plugin": "^8.26.1",
     "@typescript-eslint/parser": "^8.26.1",
     "eslint": "^9.22.0",

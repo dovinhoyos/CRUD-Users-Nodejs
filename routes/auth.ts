@@ -31,12 +31,14 @@ export const authRouter = async (req: IncomingMessage, res: ServerResponse) => {
       const user = await createUser(email, password);
       res.statusCode = 201;
       res.end(JSON.stringify(user));
+      return;
     } catch (err) {
       if (err instanceof Error) {
         res.end(JSON.stringify({ message: err.message }));
       } else {
         res.end(JSON.stringify({ message: "Internal Server Error" }));
       }
+      return;
     }
   }
 
