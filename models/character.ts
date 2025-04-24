@@ -32,7 +32,7 @@ export const getCharacterById = (id: number): Character | undefined => {
  * @returns {Character} The newly added character with a generated ID.
  */
 export const addCharacter = (character: Character): Character => {
-  if (characters.has(character.id)) {
+  if (character.id && characters.has(character.id)) {
     console.error(`Character with id ${character.id} already exists`);
     return character;
   }
