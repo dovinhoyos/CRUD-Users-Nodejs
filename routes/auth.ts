@@ -16,6 +16,14 @@ import type { AuthenticatedRequest } from "../middleware/authentication";
 
 export const authRouter = async (req: IncomingMessage, res: ServerResponse) => {
   const { method, url } = req;
+
+  /**
+   * Handles user registration.
+   *
+   * @param {IncomingMessage} req - The HTTP request object.
+   * @param {ServerResponse} res - The HTTP response object.
+   * @returns {Promise<void>} Resolves when the request is processed.
+   */
   if (url === "/auth/register" && method === HttpMethod.POST) {
     const body = await parseBody(req);
     const result = safeParse(authSchema, body);
@@ -42,6 +50,13 @@ export const authRouter = async (req: IncomingMessage, res: ServerResponse) => {
     }
   }
 
+  /**
+   * Handles user login and generates access and refresh tokens.
+   *
+   * @param {IncomingMessage} req - The HTTP request object.
+   * @param {ServerResponse} res - The HTTP response object.
+   * @returns {Promise<void>} Resolves when the request is processed.
+   */
   if (url === "/auth/login" && method === HttpMethod.POST) {
     const body = await parseBody(req);
     const result = safeParse(authSchema, body);
@@ -74,6 +89,13 @@ export const authRouter = async (req: IncomingMessage, res: ServerResponse) => {
     return;
   }
 
+  /**
+   * Handles user logout by revoking the token.
+   *
+   * @param {IncomingMessage} req - The HTTP request object.
+   * @param {ServerResponse} res - The HTTP response object.
+   * @returns {Promise<void>} Resolves when the request is processed.
+   */
   if (url === "/auth/logout" && method === HttpMethod.POST) {
     const token = req.headers["authorization"]?.split(" ")[1];
     if (token) {

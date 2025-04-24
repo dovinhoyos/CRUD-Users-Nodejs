@@ -30,6 +30,13 @@ export const characterRouter = async (
     return;
   }
 
+  /**
+   * Retrieves all characters.
+   *
+   * @param {IncomingMessage} req - The HTTP request object.
+   * @param {ServerResponse} res - The HTTP response object.
+   * @returns {Promise<void>} Resolves when the request is processed.
+   */
   if (url === "/characters" && method === "GET") {
     const characters = getAllCharacters();
     res.statusCode = 200;
@@ -37,6 +44,13 @@ export const characterRouter = async (
     return;
   }
 
+  /**
+   * Retrieves a character by ID.
+   *
+   * @param {IncomingMessage} req - The HTTP request object.
+   * @param {ServerResponse} res - The HTTP response object.
+   * @returns {Promise<void>} Resolves when the request is processed.
+   */
   if (url?.startsWith("/characters/") && method === "GET") {
     const id = parseInt(url.split("/").pop() as string, 10);
     const character = getCharacterById(id);
@@ -52,12 +66,19 @@ export const characterRouter = async (
     return;
   }
 
+  /**
+   * Adds a new character.
+   *
+   * @param {IncomingMessage} req - The HTTP request object.
+   * @param {ServerResponse} res - The HTTP response object.
+   * @returns {Promise<void>} Resolves when the request is processed.
+   */
   if (url === "/characters" && method === "POST") {
     if (
-      !await authorizeRoles(Role.ADMIN, Role.USER)(
+      !(await authorizeRoles(Role.ADMIN, Role.USER)(
         req as AuthenticatedRequest,
         res
-      )
+      ))
     ) {
       res.statusCode = 403;
       res.end(JSON.stringify({ message: "Forbidden" }));
@@ -80,8 +101,20 @@ export const characterRouter = async (
     return;
   }
 
+  /**
+   * Updates an existing character by ID.
+   *
+   * @param {IncomingMessage} req - The HTTP request object.
+   * @param {ServerResponse} res - The HTTP response object.
+   * @returns {Promise<void>} Resolves when the request is processed.
+   */
   if (url?.startsWith("/characters/") && method === HttpMethod.PATCH) {
-    if (!await authorizeRoles(Role.ADMIN)(req as AuthenticatedRequest, res)) {
+    if (
+      !(await authorizeRoles(Role.ADMIN, Role.USER)(
+        req as AuthenticatedRequest,
+        res
+      ))
+    ) {
       res.statusCode = 403;
       res.end(JSON.stringify({ message: "Forbidden" }));
       return;
@@ -102,8 +135,20 @@ export const characterRouter = async (
     return;
   }
 
+  /**
+   * Deletes a character by ID.
+   *
+   * @param {IncomingMessage} req - The HTTP request object.
+   * @param {ServerResponse} res - The HTTP response object.
+   * @returns {Promise<void>} Resolves when the request is processed.
+   */
   if (url?.startsWith("/characters/") && method === HttpMethod.DELETE) {
-    if (!await authorizeRoles(Role.ADMIN)(req as AuthenticatedRequest, res)) {
+    if (
+      !(await authorizeRoles(Role.ADMIN, Role.USER)(
+        req as AuthenticatedRequest,
+        res
+      ))
+    ) {
       res.statusCode = 403;
       res.end(JSON.stringify({ message: "Forbidden" }));
       return;
