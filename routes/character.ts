@@ -163,6 +163,7 @@ export const characterRouter = async (
       res.statusCode = 204;
       res.end(JSON.stringify({ message: "Character Deleted!" }));
     }
+    return;
   }
 
   res.statusCode = 404;
