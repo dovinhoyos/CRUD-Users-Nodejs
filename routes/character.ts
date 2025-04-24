@@ -37,7 +37,7 @@ export const characterRouter = async (
     return;
   }
 
-  if (url === "/characters/" && method === "GET") {
+  if (url?.startsWith("/characters/") && method === "GET") {
     const id = parseInt(url.split("/").pop() as string, 10);
     const character = getCharacterById(id);
 
@@ -54,7 +54,7 @@ export const characterRouter = async (
 
   if (url === "/characters" && method === "POST") {
     if (
-      !(await authorizeRoles(Role.ADMIN, Role.USER))(
+      !await authorizeRoles(Role.ADMIN, Role.USER)(
         req as AuthenticatedRequest,
         res
       )
@@ -81,7 +81,7 @@ export const characterRouter = async (
   }
 
   if (url?.startsWith("/characters/") && method === HttpMethod.PATCH) {
-    if (!(await authorizeRoles(Role.ADMIN))(req as AuthenticatedRequest, res)) {
+    if (!await authorizeRoles(Role.ADMIN)(req as AuthenticatedRequest, res)) {
       res.statusCode = 403;
       res.end(JSON.stringify({ message: "Forbidden" }));
       return;
@@ -103,7 +103,7 @@ export const characterRouter = async (
   }
 
   if (url?.startsWith("/characters/") && method === HttpMethod.DELETE) {
-    if (!(await authorizeRoles(Role.ADMIN))(req as AuthenticatedRequest, res)) {
+    if (!await authorizeRoles(Role.ADMIN)(req as AuthenticatedRequest, res)) {
       res.statusCode = 403;
       res.end(JSON.stringify({ message: "Forbidden" }));
       return;
